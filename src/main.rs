@@ -1,3 +1,6 @@
+use nalgebra::Vector3;
+mod ray;
+
 fn main() {
     // Image
 
@@ -8,16 +11,15 @@ fn main() {
 
     println!("P3\n{} {}\n255", WIDTH, HEIGHT);
     for j in (0..(HEIGHT)).rev() {
+        eprintln!("\rRows remaining: {}", (j + 1));
         for i in 0..(WIDTH) {
-            let r : f64 = i as f64 / (WIDTH - 1) as f64;
-            let g : f64 = j as f64 / (HEIGHT - 1) as f64;
-            let b : f64 = 0.25;
-
-            let ir : i32 = (255.999 * r) as i32;
-            let ig : i32 = (255.999 * g) as i32;
-            let ib : i32 = (255.999 * b) as i32;
-            println!("{} {} {}", ir, ig, ib);
+            let color : Vector3<f32> = Vector3::new(i as f32 / (WIDTH - 1) as f32, j as f32 / (HEIGHT - 1) as f32, 0.25);
+            write_color(color);
         }
     }
     println!("\nComplete.\n");
+}
+
+fn write_color(color : Vector3<f32>) {
+    println!("{} {} {}\n", (255.999 * color[0]) as u32, (255.999 * color[1]) as u32, (255.999 * color[2]) as u32)
 }
