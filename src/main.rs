@@ -1,11 +1,22 @@
 use nalgebra::Vector3;
 use ray::Ray;
-
 use crate::ray::create_ray;
 mod ray;
 
+fn sphere_hit(origin : Vector3<f32>, radius : f32, r : &Ray) -> bool {
+    let difference : Vector3<f32> = r.origin - origin;
+    let a : f32 = r.direction.dot(&r.direction);
+    let b : f32 = 2.0 * difference.dot(&r.direction);
+    let c : f32 = difference.dot(&(difference)) - radius * radius;
+    let discriminant : f32 = b * b - 4.0 * a * c;
+    return discriminant > 0.0;
+}
+
 
 fn ray_color(r : Ray) -> Vector3<f32> {
+    if sphere_hit(Vector3::new(0.0, 0.0, -1.0), 0.5, &r) {
+        return Vector3::new(0.0, 1.0, 0.0);
+    }
     let direction_vec : Vector3<f32> = r.direction;
     let t = 0.5 * (direction_vec.y + 1.0);
     return (1.0 - t) * Vector3::new(1.0, 1.0, 1.0) + t * Vector3::new(0.5, 0.7, 1.0);
