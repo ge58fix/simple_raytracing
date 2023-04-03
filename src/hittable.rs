@@ -1,6 +1,7 @@
 
 use ray::Ray;
 use nalgebra::Vector3;
+use crate::ray;
 
 #[derive(Debug, Clone, Copy)]
 pub struct HitRecord {
@@ -11,14 +12,21 @@ pub struct HitRecord {
 }
 
 impl HitRecord {
-    pub fn set_face_normal(mut self, r : Ray, outward_normal : Vector3<f32>) {
-        front_face = r.direction.dot(outward_normal) < 0;
-        if (front_face) {
-            normal = outward_normal;
+    pub fn set_face_normal(mut self, r : Ray, outward_normal : Vector3<f32>) -> Vector3<f32> {
+        self.front_face = r.direction.dot(&outward_normal) < 0.0;
+        if self.front_face {
+            //self.normal = outward_normal;
+            return outward_normal;
         }
         else {
-            normal = - outward_normal;
+            //self.normal = outward_normal;
+            return - outward_normal;
         }
     }
+}
 
+impl Default for HitRecord {
+    fn default() -> Self {
+        HitRecord { p: Vector3::new(0.0, 0.0, 0.0), normal: Vector3::new(0.0, 0.0, 0.0), t: 0.0, front_face: true}
+    }
 }

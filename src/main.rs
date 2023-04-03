@@ -1,37 +1,25 @@
+use std::{collections::LinkedList, f32::INFINITY};
 use nalgebra::Vector3;
 use ray::Ray;
-use crate::ray::create_ray;
+use crate::{ray::create_ray, hittable_list::HittableList, sphere::Sphere, hittable::HitRecord};
 mod ray;
+mod hittable_list;
+mod hittable;
+mod sphere;
 
 fn unit_vector(v : Vector3<f32>) -> Vector3<f32> {
     return v / v.magnitude();
 }
 
-fn sphere_hit(origin : Vector3<f32>, radius : f32, r : &Ray) -> f32 {
-    let difference : Vector3<f32> = r.origin - origin;
-    let a : f32 = r.direction.dot(&r.direction);
-    let h : f32 = difference.dot(&r.direction);
-    let c : f32 = difference.dot(&(difference)) - radius * radius;
-    let discriminant : f32 = h * h - a * c;
-    if discriminant < 0.0 {
-        return -1.0;
-    }
-    else {
-        return (-h - discriminant.sqrt()) / a
-    }
-}
+fn ray_color(r : Ray, world : HittableList) -> Vector3<f32> {
+    let mut rec : Sphere = Sphere { center: Vector3::new(0.,0.,0.), radius: 0., rec: HitRecord::default()}; //placeholder
 
-
-fn ray_color(r : Ray) -> Vector3<f32> {
-    let origin : Vector3<f32> = Vector3::new(0.0, 0.0, -1.0);
-    let mut t : f32 = sphere_hit(origin, 0.5, &r);
-    if t > 0.0 {
-        let n : Vector3<f32> = unit_vector(r.at(t) - origin);
-        return 0.5 * Vector3::new(n.x + 1.0, n.y + 1.0, n.z + 1.0);
+    if world.hit(r, 0., INFINITY, &mut rec) {
+        return 0.5 * (rec.rec.normal + Vector3::new(1., 1., 1.));
     }
     let unit_vec : Vector3<f32> = unit_vector(r.direction);
-    t = 0.5 * (unit_vec.y + 1.0);
-    return (1.0 - t) * Vector3::new(1.0, 1.0, 1.0) + t * Vector3::new(0.5, 0.7, 1.0)
+    let t = 0.5 * (unit_vec.y + 1.);
+    return (1. - t) * Vector3::new(1., 1., 1.) + t * Vector3::new(0.5, 0.7, 1.)
 }
 
 fn main() {
@@ -40,6 +28,14 @@ fn main() {
     const ASPECT_RATIO : f32 = 16.0 / 9.0;
     const WIDTH : u32 = 400;
     const HEIGHT : u32 = (WIDTH as f32 / ASPECT_RATIO) as u32;
+
+    // World
+
+    let mut world : HittableList = HittableList {list : LinkedList::<Sphere>::new()};
+    let elt1 = Sphere {center : Vector3::new(0., 0.0, -1.), radius : 0.5, rec : HitRecord::default()};
+    let elt2 = Sphere {center : Vector3::new(0., -100.5, -1.), radius : 100., rec : HitRecord::default()};
+    world.list.push_back(elt1);
+    world.list.push_back(elt2);
 
     // Camera
 
@@ -60,7 +56,7 @@ fn main() {
             let u : f32 = i as f32 / (WIDTH - 1) as f32;
             let v : f32 = j as f32 / (HEIGHT - 1) as f32;
             let r : Ray = create_ray(origin, lower_left_corner + u * horizontal + v * vertical - origin);
-            let color : Vector3<f32> = ray_color(r);
+            let color : Vector3<f32> = ray_color(r, world.clone());
             write_color(color);
         }
     }
