@@ -10,14 +10,14 @@ fn unit_vector(v : Vector3<f32>) -> Vector3<f32> {
 fn sphere_hit(origin : Vector3<f32>, radius : f32, r : &Ray) -> f32 {
     let difference : Vector3<f32> = r.origin - origin;
     let a : f32 = r.direction.dot(&r.direction);
-    let b : f32 = 2.0 * difference.dot(&r.direction);
+    let h : f32 = difference.dot(&r.direction);
     let c : f32 = difference.dot(&(difference)) - radius * radius;
-    let discriminant : f32 = b * b - 4.0 * a * c;
+    let discriminant : f32 = h * h - a * c;
     if discriminant < 0.0 {
         return -1.0;
     }
     else {
-        return (-b - discriminant.sqrt()) / (2.0 * a)
+        return (-h - discriminant.sqrt()) / a
     }
 }
 
