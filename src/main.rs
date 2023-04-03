@@ -3,23 +3,35 @@ use ray::Ray;
 use crate::ray::create_ray;
 mod ray;
 
-fn sphere_hit(origin : Vector3<f32>, radius : f32, r : &Ray) -> bool {
+fn unit_vector(v : Vector3<f32>) -> Vector3<f32> {
+    return v / v.magnitude();
+}
+
+fn sphere_hit(origin : Vector3<f32>, radius : f32, r : &Ray) -> f32 {
     let difference : Vector3<f32> = r.origin - origin;
     let a : f32 = r.direction.dot(&r.direction);
     let b : f32 = 2.0 * difference.dot(&r.direction);
     let c : f32 = difference.dot(&(difference)) - radius * radius;
     let discriminant : f32 = b * b - 4.0 * a * c;
-    return discriminant > 0.0;
+    if discriminant < 0.0 {
+        return -1.0;
+    }
+    else {
+        return (-b - discriminant.sqrt()) / (2.0 * a)
+    }
 }
 
 
 fn ray_color(r : Ray) -> Vector3<f32> {
-    if sphere_hit(Vector3::new(0.0, 0.0, -1.0), 0.5, &r) {
-        return Vector3::new(0.0, 1.0, 0.0);
+    let origin : Vector3<f32> = Vector3::new(0.0, 0.0, -1.0);
+    let mut t : f32 = sphere_hit(origin, 0.5, &r);
+    if t > 0.0 {
+        let n : Vector3<f32> = unit_vector(r.at(t) - origin);
+        return 0.5 * Vector3::new(n.x + 1.0, n.y + 1.0, n.z + 1.0);
     }
-    let direction_vec : Vector3<f32> = r.direction;
-    let t = 0.5 * (direction_vec.y + 1.0);
-    return (1.0 - t) * Vector3::new(1.0, 1.0, 1.0) + t * Vector3::new(0.5, 0.7, 1.0);
+    let unit_vec : Vector3<f32> = unit_vector(r.direction);
+    t = 0.5 * (unit_vec.y + 1.0);
+    return (1.0 - t) * Vector3::new(1.0, 1.0, 1.0) + t * Vector3::new(0.5, 0.7, 1.0)
 }
 
 fn main() {
