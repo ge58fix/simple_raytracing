@@ -17,6 +17,7 @@ mod hittable_list;
 mod ray;
 mod sphere;
 mod util;
+mod materials;
 
 fn unit_vector(v: Vector3<f32>) -> Vector3<f32> {
     return v / v.magnitude();

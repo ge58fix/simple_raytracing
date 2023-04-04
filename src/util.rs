@@ -1,4 +1,5 @@
-use nalgebra::Vector3;
+
+use nalgebra::{Vector3, ComplexField};
 use rand::{self, Rng};
 
 use crate::unit_vector;
@@ -41,4 +42,13 @@ pub fn rand_in_hemisphere(normal : Vector3<f32>) -> Vector3<f32> {
     else {
         return - in_sphere;
     }
+}
+
+pub fn near_zero(v : Vector3<f32>) -> bool {
+    let e : f32 = 1e-8;
+    return v.x.abs() < e && v.y.abs() < e && v.z.abs() < e
+}
+
+pub fn reflect(v : Vector3<f32>, n : Vector3<f32>) -> Vector3<f32> {
+    return v - 2. * v.dot(&n) * n;
 }
