@@ -15,9 +15,9 @@ pub fn write_color(pixel_color: Vector3<f32>, samples_per_pixel: u32) {
     let mut g = pixel_color.y;
     let mut b = pixel_color.z;
     let scale = 1. / samples_per_pixel as f32;
-    r *= scale;
-    g *= scale;
-    b *= scale;
+    r = (r * scale).sqrt();
+    g = (g * scale).sqrt();
+    b = (b * scale).sqrt();
     println!(
         "{} {} {}",
         (256. * clamp(r, 0., 0.999)) as u32,
