@@ -8,6 +8,7 @@ pub struct Sphere {
     pub center: Vector3<f32>,
     pub radius: f32,
     pub rec: HitRecord,
+    pub material_num : u8,
 }
 
 impl Sphere {
@@ -29,6 +30,9 @@ impl Sphere {
                 return false;
             }
         }
+        rec.radius = self.radius;
+        rec.center = self.center;
+        rec.material_num = self.material_num;
         rec.rec.t = val;
         rec.rec.p = r.at(rec.rec.t);
         let outward_normal: Vector3<f32> = (rec.rec.p - self.center) / self.radius;

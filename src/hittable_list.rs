@@ -15,6 +15,7 @@ impl HittableList {
             center: Vector3::new(0., 0., 0.),
             radius: 0.,
             rec: HitRecord::default(),
+            material_num: 0
         }; // placeholder
         let mut hit_indicator: bool = false;
         let mut current_closest: f32 = t_max;

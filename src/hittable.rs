@@ -8,7 +8,7 @@ pub struct HitRecord {
     pub normal: Vector3<f32>,
     pub t: f32,
     pub front_face: bool,
-    pub material_num : u8,
+    //pub material_num : u8,
 }
 
 impl HitRecord {
@@ -29,7 +29,6 @@ impl Default for HitRecord {
             normal: Vector3::new(0.0, 0.0, 0.0),
             t: 0.0,
             front_face: true,
-            material_num : 0,
         }
     }
 }
