@@ -15,7 +15,9 @@ impl HittableList {
             center: Vector3::new(0., 0., 0.),
             radius: 0.,
             rec: HitRecord::default(),
-            material_num: 0
+            material_num: 0,
+            attenuation: Vector3::new(0., 0., 0.),
+            mat_attribute: 1.,
         }; // placeholder
         let mut hit_indicator: bool = false;
         let mut current_closest: f32 = t_max;

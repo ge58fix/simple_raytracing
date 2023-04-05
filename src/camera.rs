@@ -4,10 +4,6 @@ use crate::ray::Ray;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Camera {
-    //aspect_ratio : f32,
-    //viewport_height : f32,
-    //viewport_width : f32,
-    //focal_length : f32,
     origin: Vector3<f32>,
     lower_left_corner: Vector3<f32>,
     horizontal: Vector3<f32>,
@@ -26,10 +22,6 @@ pub fn create_camera() -> Camera {
         origin - horizontal / 2. - vertical / 2. - Vector3::new(0., 0., focal_length);
 
     Camera {
-        //aspect_ratio,
-        //viewport_height,
-        //viewport_width,
-        //focal_length,
         origin,
         lower_left_corner,
         horizontal,

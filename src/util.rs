@@ -1,4 +1,6 @@
 
+use std::cmp::min;
+
 use nalgebra::{Vector3, ComplexField};
 use rand::{self, Rng};
 
@@ -51,4 +53,12 @@ pub fn near_zero(v : Vector3<f32>) -> bool {
 
 pub fn reflect(v : Vector3<f32>, n : Vector3<f32>) -> Vector3<f32> {
     return v - 2. * v.dot(&n) * n;
+}
+
+pub fn refract(uv: Vector3<f32>, n: Vector3<f32>, etai_over_etat: f32) -> Vector3<f32> {
+    let cos_theta = f32::min((-uv).dot(&n), 1.);
+    let r_out_perpendicular = etai_over_etat * (uv + cos_theta * n);
+    let r_out_parallel = - (1. - r_out_perpendicular.magnitude_squared()).abs().sqrt() * n;
+    return r_out_perpendicular + r_out_parallel;
+
 }

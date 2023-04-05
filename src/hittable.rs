@@ -8,7 +8,6 @@ pub struct HitRecord {
     pub normal: Vector3<f32>,
     pub t: f32,
     pub front_face: bool,
-    //pub material_num : u8,
 }
 
 impl HitRecord {
