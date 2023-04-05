@@ -1,5 +1,5 @@
 
-use std::cmp::min;
+use std::{cmp::min, f32::consts::PI};
 
 use nalgebra::{Vector3, ComplexField};
 use rand::{self, Rng};
@@ -20,6 +20,10 @@ fn rand_vec3_in_range(min: f32, max: f32) -> Vector3<f32> {
         rand::thread_rng().gen_range(min..max),
         rand::thread_rng().gen_range(min..max),
     )
+}
+
+fn rand_float_in_range(min: f32, max: f32) -> f32 {
+    rand::thread_rng().gen_range(min..max)
 }
 
 pub fn rand_in_unit_sphere() -> Vector3<f32> {
@@ -60,5 +64,19 @@ pub fn refract(uv: Vector3<f32>, n: Vector3<f32>, etai_over_etat: f32) -> Vector
     let r_out_perpendicular = etai_over_etat * (uv + cos_theta * n);
     let r_out_parallel = - (1. - r_out_perpendicular.magnitude_squared()).abs().sqrt() * n;
     return r_out_perpendicular + r_out_parallel;
+}
 
+pub fn degrees_to_radians(x: f32) -> f32 {
+    return x * PI / 180.
+}
+
+pub fn rand_in_unit_disk() -> Vector3<f32> {
+    loop {
+        let mut p = rand_vec3_in_range(-1., 1.);
+        p.z = 0.;
+        if p.magnitude_squared() >= 1. {
+            continue;
+        }
+        return p;
+    }
 }

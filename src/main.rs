@@ -9,7 +9,7 @@ use materials::{lambertian_scatter, metal_scatter, dielectric_scatter};
 use nalgebra::Vector3;
 use rand;
 use ray::Ray;
-use std::{collections::LinkedList, f32::INFINITY};
+use std::{collections::LinkedList, f32::{INFINITY}};
 mod camera;
 mod color;
 mod hittable;
@@ -89,36 +89,61 @@ fn main() {
         list: LinkedList::<Sphere>::new(),
     };
     let elt1 = Sphere {
-        center: Vector3::new(0., 0.0, -1.),
-        radius: 0.5,
-        rec: HitRecord::default(),
-        material_num: 2,
-        attenuation: Vector3::new(1., 1., 1.),
-        mat_attribute: 1.5,
-    };
-    let elt2 = Sphere {
         center: Vector3::new(0., -100.5, -1.),
         radius: 100.,
         rec: HitRecord::default(),
         material_num: 0,
         attenuation: Vector3::new(0.8, 0.8, 0.),
-        mat_attribute: 1.,
+        mat_attribute: 0.,
     };
+    let elt2 = Sphere {
+        center: Vector3::new(0., 0., -1.),
+        radius: 0.5,
+        rec: HitRecord::default(),
+        material_num: 0,
+        attenuation: Vector3::new(0.1, 0.2, 0.5),
+        mat_attribute: 0.,
+    };
+    
     let elt3 = Sphere {
         center: Vector3::new(-1., 0., -1.),
         radius: 0.5,
         rec: HitRecord::default(),
-        material_num: 1,
-        attenuation: Vector3::new(0.8, 0.8, 0.8),
-        mat_attribute: 0.3,
+        material_num: 2,
+        attenuation: Vector3::new(0., 0., 0.),
+        mat_attribute: 1.5,
     };
+    let elt4 = Sphere {
+        center: Vector3::new(1., 0., -1.),
+        radius: 0.5,
+        rec: HitRecord::default(),
+        material_num: 1,
+        attenuation: Vector3::new(0.8, 0.6, 0.2),
+        mat_attribute: 0.,
+    };
+    
     world.list.push_back(elt1);
     world.list.push_back(elt2);
     world.list.push_back(elt3);
+    world.list.push_back(elt4);
 
     // Camera
 
-    let cam: Camera = create_camera();
+    let lookfrom = Vector3::new(3., 3., 2.);
+    let lookat = Vector3::new(0., 0., -1.);
+    let vup = Vector3::new(0., 1., 0.);
+    let focus_dist = (lookfrom - lookat).magnitude();
+    let aperture = 2.;
+
+    let cam: Camera = create_camera(
+        lookfrom,
+        lookat,
+        vup,
+        ASPECT_RATIO,
+        20.,
+        focus_dist,
+        aperture
+    );
 
     // Render
 
