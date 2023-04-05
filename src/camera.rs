@@ -1,6 +1,10 @@
 use nalgebra::Vector3;
 
-use crate::{ray::Ray, util::{degrees_to_radians, rand_in_unit_disk}, unit_vector};
+use crate::{
+    ray::Ray,
+    unit_vector,
+    util::{degrees_to_radians, rand_in_unit_disk},
+};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Camera {
@@ -10,10 +14,18 @@ pub struct Camera {
     vertical: Vector3<f32>,
     lens_radius: f32,
     u: Vector3<f32>,
-    v: Vector3<f32>
+    v: Vector3<f32>,
 }
 
-pub fn create_camera(lookfrom: Vector3<f32>, lookat: Vector3<f32>, vup: Vector3<f32>, aspect_ratio: f32, vfov: f32, focus_dist: f32, aperture: f32) -> Camera {
+pub fn create_camera(
+    lookfrom: Vector3<f32>,
+    lookat: Vector3<f32>,
+    vup: Vector3<f32>,
+    aspect_ratio: f32,
+    vfov: f32,
+    focus_dist: f32,
+    aperture: f32,
+) -> Camera {
     let theta = degrees_to_radians(vfov);
     let h = (theta / 2.).tan();
     let viewport_height: f32 = 2. * h;
@@ -26,8 +38,7 @@ pub fn create_camera(lookfrom: Vector3<f32>, lookat: Vector3<f32>, vup: Vector3<
     let origin: Vector3<f32> = lookfrom;
     let horizontal: Vector3<f32> = focus_dist * viewport_width * u;
     let vertical: Vector3<f32> = focus_dist * viewport_height * v;
-    let lower_left_corner: Vector3<f32> =
-        origin - horizontal / 2. - vertical / 2. - focus_dist * w;
+    let lower_left_corner: Vector3<f32> = origin - horizontal / 2. - vertical / 2. - focus_dist * w;
     let lens_radius = aperture / 2.;
 
     Camera {
@@ -36,7 +47,8 @@ pub fn create_camera(lookfrom: Vector3<f32>, lookat: Vector3<f32>, vup: Vector3<
         horizontal,
         vertical,
         lens_radius,
-        u, v,
+        u,
+        v,
     }
 }
 
@@ -47,7 +59,8 @@ impl Camera {
         Ray {
             origin: self.origin + offset,
             direction: self.lower_left_corner + s * self.horizontal + t * self.vertical
-                - self.origin - offset,
+                - self.origin
+                - offset,
         }
     }
 }

@@ -8,7 +8,7 @@ pub struct Sphere {
     pub center: Vector3<f32>,
     pub radius: f32,
     pub rec: HitRecord,
-    pub material_num : u8,
+    pub material_num: u8,
     pub attenuation: Vector3<f32>,
     pub mat_attribute: f32,
 }

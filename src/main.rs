@@ -5,19 +5,19 @@ use crate::{
     hittable_list::HittableList,
     sphere::Sphere,
 };
-use materials::{lambertian_scatter, metal_scatter, dielectric_scatter};
+use materials::{dielectric_scatter, lambertian_scatter, metal_scatter};
 use nalgebra::Vector3;
 use rand;
 use ray::Ray;
-use std::{collections::LinkedList, f32::{INFINITY}};
+use std::{collections::LinkedList, f32::INFINITY};
 mod camera;
 mod color;
 mod hittable;
 mod hittable_list;
+mod materials;
 mod ray;
 mod sphere;
 mod util;
-mod materials;
 
 fn unit_vector(v: Vector3<f32>) -> Vector3<f32> {
     return v / v.magnitude();
@@ -37,36 +37,28 @@ fn ray_color(r: Ray, world: HittableList, depth: u32) -> Vector3<f32> {
         return Vector3::new(0., 0., 0.);
     }
     if world.clone().hit(r, 0.001, INFINITY, &mut rec) {
-        let mut scattered : Ray = Ray {direction : Vector3::new(0., 0., 0.), origin : Vector3::new(0., 0., 0.)};
-        let mut recc : HitRecord = rec.rec.clone();
-        if rec.material_num == 0 {
-            if lambertian_scatter(&mut recc, &mut scattered) {
-                let vec : Vector3<f32> = ray_color(scattered, world, depth-1);
-                return Vector3::new(vec.x * rec.attenuation.x, vec.y * rec.attenuation.y, vec.z * rec.attenuation.z); // temp
-                
-            }
-            else {
-                return Vector3::new(0., 0., 0.)
-            }
+        let mut scattered: Ray = Ray {
+            direction: Vector3::new(0., 0., 0.),
+            origin: Vector3::new(0., 0., 0.),
+        };
+        let mut recc: HitRecord = rec.rec.clone();
+        let indicator : bool;
+
+        match rec.material_num {
+            0 => indicator = lambertian_scatter(&mut recc, &mut scattered),
+            1 => indicator = metal_scatter(r, &mut recc, &mut scattered, rec.mat_attribute),
+            2 => indicator = dielectric_scatter(r, &mut recc, &mut scattered, rec.mat_attribute),
+            _ => indicator = lambertian_scatter(&mut recc, &mut scattered),
         }
-        else if rec.material_num == 1 {
-            if metal_scatter(r,&mut recc, &mut scattered, rec.mat_attribute) {
-                let vec : Vector3<f32> = ray_color(scattered, world, depth-1);
-                return Vector3::new(vec.x * rec.attenuation.x, vec.y * rec.attenuation.y, vec.z * rec.attenuation.y); // temp
-            }
-            else {
-                return Vector3::new(0., 0., 0.)
-            }
-        }
-        // später zusammenfassen
-        else if rec.material_num == 2 {
-            if dielectric_scatter(r,&mut recc, &mut scattered, rec.mat_attribute) {
-                let vec : Vector3<f32> = ray_color(scattered, world, depth-1);
-                return Vector3::new(vec.x * rec.attenuation.x, vec.y * rec.attenuation.y, vec.z * rec.attenuation.y); // temp
-            }
-            else {
-                return Vector3::new(0., 0., 0.)
-            }
+        if indicator {
+            let vec: Vector3<f32> = ray_color(scattered, world, depth - 1);
+            return Vector3::new(
+                vec.x * rec.attenuation.x,
+                vec.y * rec.attenuation.y,
+                vec.z * rec.attenuation.z,
+            );
+        } else {
+            return Vector3::new(0., 0., 0.);
         }
     }
     let unit_vec: Vector3<f32> = unit_vector(r.direction);
@@ -104,7 +96,7 @@ fn main() {
         attenuation: Vector3::new(0.1, 0.2, 0.5),
         mat_attribute: 0.,
     };
-    
+
     let elt3 = Sphere {
         center: Vector3::new(-1., 0., -1.),
         radius: 0.5,
@@ -121,7 +113,7 @@ fn main() {
         attenuation: Vector3::new(0.8, 0.6, 0.2),
         mat_attribute: 0.,
     };
-    
+
     world.list.push_back(elt1);
     world.list.push_back(elt2);
     world.list.push_back(elt3);
@@ -142,7 +134,7 @@ fn main() {
         ASPECT_RATIO,
         20.,
         focus_dist,
-        aperture
+        aperture,
     );
 
     // Render
