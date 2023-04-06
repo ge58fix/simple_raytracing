@@ -69,10 +69,10 @@ fn ray_color(r: Ray, world: HittableList, depth: u32) -> Vector3<f32> {
 fn main() {
     // Image
 
-    const ASPECT_RATIO: f32 = 16.0 / 9.0;
-    const WIDTH: u32 = 400;
+    const ASPECT_RATIO: f32 = 3.0 / 2.0;
+    const WIDTH: u32 = 1200;
     const HEIGHT: u32 = (WIDTH as f32 / ASPECT_RATIO) as u32;
-    const SAMPLES_PER_PIXEL: u32 = 100;
+    const SAMPLES_PER_PIXEL: u32 = 500;
     const MAX_DEPTH: u32 = 50;
 
     // World
@@ -81,37 +81,37 @@ fn main() {
         list: LinkedList::<Sphere>::new(),
     };
     let elt1 = Sphere {
-        center: Vector3::new(0., -100.5, -1.),
-        radius: 100.,
+        center: Vector3::new(0., -1000., 0.),
+        radius: 1000.,
         rec: HitRecord::default(),
         material_num: 0,
-        attenuation: Vector3::new(0.8, 0.8, 0.),
+        attenuation: Vector3::new(0.5, 0.5, 0.5),
         mat_attribute: 0.,
     };
     let elt2 = Sphere {
-        center: Vector3::new(0., 0., -1.),
-        radius: 0.5,
+        center: Vector3::new(0., 1., 0.),
+        radius: 1.0,
         rec: HitRecord::default(),
-        material_num: 0,
+        material_num: 2,
         attenuation: Vector3::new(0.1, 0.2, 0.5),
-        mat_attribute: 0.,
+        mat_attribute: 1.5,
     };
 
     let elt3 = Sphere {
-        center: Vector3::new(-1., 0., -1.),
-        radius: 0.5,
+        center: Vector3::new(-4., 1., 0.),
+        radius: 1.,
         rec: HitRecord::default(),
-        material_num: 2,
-        attenuation: Vector3::new(0., 0., 0.),
-        mat_attribute: 1.5,
+        material_num: 0,
+        attenuation: Vector3::new(0.4, 0.2, 0.1),
+        mat_attribute: 1.,
     };
     let elt4 = Sphere {
-        center: Vector3::new(1., 0., -1.),
-        radius: 0.5,
+        center: Vector3::new(4., 1., 0.),
+        radius: 1.,
         rec: HitRecord::default(),
         material_num: 1,
-        attenuation: Vector3::new(0.8, 0.6, 0.2),
-        mat_attribute: 0.,
+        attenuation: Vector3::new(0.7, 0.6, 0.5),
+        mat_attribute: 0.1,
     };
 
     world.list.push_back(elt1);
@@ -121,11 +121,12 @@ fn main() {
 
     // Camera
 
-    let lookfrom = Vector3::new(3., 3., 2.);
-    let lookat = Vector3::new(0., 0., -1.);
+    let lookfrom = Vector3::new(13., 2., 3.);
+    let lookat = Vector3::new(0., 0., 0.);
     let vup = Vector3::new(0., 1., 0.);
-    let focus_dist = (lookfrom - lookat).magnitude();
-    let aperture = 2.;
+    //let focus_dist = (lookfrom - lookat).magnitude();
+    let focus_dist = 10.0;
+    let aperture = 0.1;
 
     let cam: Camera = create_camera(
         lookfrom,
