@@ -14,7 +14,7 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn hit(&mut self, r: Ray, t_min: f32, t_max: f32, rec: &mut Sphere) -> bool {
+    pub fn hit(&mut self, r: Ray, t_min: f32, t_max: f32, sphere_opt: &mut Option<Sphere>) -> bool {
         let difference: Vector3<f32> = r.origin - self.center;
         let a: f32 = r.direction.magnitude_squared();
         let h: f32 = difference.dot(&r.direction);
@@ -32,6 +32,7 @@ impl Sphere {
                 return false;
             }
         }
+        let mut rec = sphere_opt.unwrap();
         rec.mat_attribute = self.mat_attribute;
         rec.radius = self.radius;
         rec.center = self.center;

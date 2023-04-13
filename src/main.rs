@@ -24,38 +24,32 @@ fn unit_vector(v: Vector3<f32>) -> Vector3<f32> {
 }
 
 fn ray_color(r: Ray, world: HittableList, depth: u32) -> Vector3<f32> {
-    let mut rec: Sphere = Sphere {
-        center: Vector3::new(0., 0., 0.),
-        radius: 0.,
-        rec: HitRecord::default(),
-        material_num: 0,
-        attenuation: Vector3::new(0., 0., 0.),
-        mat_attribute: 1.,
-    }; // placeholder
+    let mut sphere_opt: Option<Sphere> = None;
 
     if depth <= 0 {
         return Vector3::new(0., 0., 0.);
     }
-    if world.clone().hit(r, 0.001, INFINITY, &mut rec) {
+    if world.clone().hit(r, 0.001, INFINITY, &mut sphere_opt) {
         let mut scattered: Ray = Ray {
             direction: Vector3::new(0., 0., 0.),
             origin: Vector3::new(0., 0., 0.),
         };
-        let mut recc: HitRecord = rec.rec.clone();
+        let sphere = sphere_opt.unwrap();
+        let mut recc: HitRecord = sphere.rec.clone();
         let indicator: bool;
 
-        match rec.material_num {
+        match sphere.material_num {
             0 => indicator = lambertian_scatter(&mut recc, &mut scattered),
-            1 => indicator = metal_scatter(r, &mut recc, &mut scattered, rec.mat_attribute),
-            2 => indicator = dielectric_scatter(r, &mut recc, &mut scattered, rec.mat_attribute),
+            1 => indicator = metal_scatter(r, &mut recc, &mut scattered, sphere.mat_attribute),
+            2 => indicator = dielectric_scatter(r, &mut recc, &mut scattered, sphere.mat_attribute),
             _ => indicator = lambertian_scatter(&mut recc, &mut scattered),
         }
         if indicator {
             let vec: Vector3<f32> = ray_color(scattered, world, depth - 1);
             return Vector3::new(
-                vec.x * rec.attenuation.x,
-                vec.y * rec.attenuation.y,
-                vec.z * rec.attenuation.z,
+                vec.x * sphere.attenuation.x,
+                vec.y * sphere.attenuation.y,
+                vec.z * sphere.attenuation.z,
             );
         } else {
             return Vector3::new(0., 0., 0.);
@@ -144,7 +138,6 @@ fn main() {
     let lookfrom = Vector3::new(13., 2., 3.);
     let lookat = Vector3::new(0., 0., 0.);
     let vup = Vector3::new(0., 1., 0.);
-    //let focus_dist = (lookfrom - lookat).magnitude();
     let focus_dist = 10.0;
     let aperture = 0.1;
 
