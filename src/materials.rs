@@ -35,7 +35,7 @@ pub fn dielectric_scatter(
     scattered: &mut Ray,
     refraction_index: f32,
 ) -> bool {
-    let mut refraction_ratio: f32 = 0.;
+    let refraction_ratio: f32;
     if rec.front_face {
         refraction_ratio = 1. / refraction_index;
     } else {
@@ -46,7 +46,7 @@ pub fn dielectric_scatter(
     let cos_theta = f32::min((-unit_direction).dot(&rec.normal), 1.);
     let sine_theta = (1. - cos_theta * cos_theta).sqrt();
     let cannot_refract = refraction_ratio * sine_theta > 1.;
-    let mut direction = Vector3::new(0., 0., 0.);
+    let direction : Vector3<f32>;
     if cannot_refract || reflectance(cos_theta, refraction_index) > random() {
         direction = reflect(unit_direction, rec.normal);
     } else {
@@ -54,7 +54,7 @@ pub fn dielectric_scatter(
     }
     *scattered = Ray {
         origin: rec.p,
-        direction: direction,
+        direction,
     };
     return true;
 }
