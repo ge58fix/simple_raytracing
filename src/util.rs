@@ -1,6 +1,6 @@
-use std::{f32::consts::PI};
+use std::f32::consts::PI;
 
-use nalgebra::{Vector3};
+use nalgebra::Vector3;
 use rand::{self, Rng};
 
 use crate::unit_vector;

@@ -25,24 +25,26 @@ impl Sphere {
         }
         let sqrtd: f32 = discriminant.sqrt();
 
-        let mut val: f32 = (-h - sqrtd) / a;
-        if val < t_min || val > t_max {
-            val = (-h + sqrtd) / a;
-            if val < t_min || val > t_max {
+        let mut t: f32 = (-h - sqrtd) / a;
+        if t < t_min || t > t_max {
+            t = (-h + sqrtd) / a;
+            if t < t_min || t > t_max {
                 return false;
             }
         }
-        let mut rec = sphere_opt.unwrap();
-        rec.mat_attribute = self.mat_attribute;
-        rec.radius = self.radius;
-        rec.center = self.center;
-        rec.attenuation = self.attenuation;
-        rec.material_num = self.material_num;
-        rec.rec.t = val;
-        rec.rec.p = r.at(rec.rec.t);
-        let outward_normal: Vector3<f32> = (rec.rec.p - self.center) / self.radius;
-        rec.rec.normal = rec.rec.set_face_normal(r, outward_normal);
 
+        let mut sphere = Sphere {
+            center: self.center,
+            radius: self.radius,
+            rec: HitRecord::default(),
+            material_num: self.material_num,
+            attenuation: self.attenuation,
+            mat_attribute: self.mat_attribute};
+        sphere.rec.t = t;
+        sphere.rec.p = r.at(t);
+        let outward_normal: Vector3<f32> = (sphere.rec.p - self.center) / self.radius;
+        sphere.rec.normal = sphere.rec.set_face_normal(r, outward_normal);
+        *sphere_opt = Some(sphere);
         return true;
     }
 }

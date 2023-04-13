@@ -46,7 +46,7 @@ pub fn dielectric_scatter(
     let cos_theta = f32::min((-unit_direction).dot(&rec.normal), 1.);
     let sine_theta = (1. - cos_theta * cos_theta).sqrt();
     let cannot_refract = refraction_ratio * sine_theta > 1.;
-    let direction : Vector3<f32>;
+    let direction: Vector3<f32>;
     if cannot_refract || reflectance(cos_theta, refraction_index) > random() {
         direction = reflect(unit_direction, rec.normal);
     } else {
