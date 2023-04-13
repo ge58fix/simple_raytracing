@@ -102,7 +102,7 @@ fn main() {
         radius: 1.,
         rec: HitRecord::default(),
         material_num: 0,
-        attenuation: Vector3::new(0.4, 0.2, 0.1),
+        attenuation: Vector3::new(0.9, 0.65, 0.1),
         mat_attribute: 1.,
     };
     let elt4 = Sphere {
@@ -114,10 +114,30 @@ fn main() {
         mat_attribute: 0.1,
     };
 
+    let elt5 = Sphere {
+        center: Vector3::new(4., 1., 2.),
+        radius: 0.3,
+        rec: HitRecord::default(),
+        material_num: 1,
+        attenuation: Vector3::new(0.7, 0.6, 0.5),
+        mat_attribute: 1.5,
+    };
+
+    let elt6 = Sphere {
+        center: Vector3::new(5., 1., 2.5),
+        radius: 0.5,
+        rec: HitRecord::default(),
+        material_num: 0,
+        attenuation: Vector3::new(0.5, 0., 0.3),
+        mat_attribute: 1.,
+    };
+
     world.list.push_back(elt1);
     world.list.push_back(elt2);
     world.list.push_back(elt3);
     world.list.push_back(elt4);
+    world.list.push_back(elt5);
+    world.list.push_back(elt6);
 
     // Camera
 
