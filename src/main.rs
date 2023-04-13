@@ -42,7 +42,7 @@ fn ray_color(r: Ray, world: HittableList, depth: u32) -> Vector3<f32> {
             origin: Vector3::new(0., 0., 0.),
         };
         let mut recc: HitRecord = rec.rec.clone();
-        let indicator : bool;
+        let indicator: bool;
 
         match rec.material_num {
             0 => indicator = lambertian_scatter(&mut recc, &mut scattered),

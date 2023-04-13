@@ -37,7 +37,7 @@ pub fn dielectric_scatter(
 ) -> bool {
     let mut refraction_ratio: f32 = 0.;
     if rec.front_face {
-        refraction_ratio = refraction_index / 1.;
+        refraction_ratio = 1. / refraction_index;
     } else {
         refraction_ratio = refraction_index;
     }
